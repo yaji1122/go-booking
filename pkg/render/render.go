@@ -15,33 +15,33 @@ var functions = template.FuncMap{}
 // NewTemplates sets the config for the template package
 var appConfig *config.AppConfig
 
-func NewTemplates(a *config.AppConfig) {
-	appConfig = a
+func NewTemplates(config *config.AppConfig) {
+	appConfig = config
 }
 
-func AddDefaultdata(td *model.TemplateData) *model.TemplateData {
-
+func AddDefaultData(td *model.TemplateData) *model.TemplateData {
 	return td
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string, data *model.TemplateData) {
-	tmpl = tmpl + ".page.gohtml"
-	var tc map[string]*template.Template
+// TemplateRenderer 回應請求，回傳對應的Template頁面
+func TemplateRenderer(w http.ResponseWriter, name string, data *model.TemplateData) {
+	name = name + ".page.gohtml"
+	var templateCache map[string]*template.Template
 	//get the template cache from the appConfig config
 	if appConfig.UseCache {
-		tc = appConfig.TemplateCache
+		templateCache = appConfig.TemplateCache
 	} else {
-		tc, _ = CreateTemplateCache()
+		templateCache, _ = CreateTemplateCache()
 	}
 
 	//map 如果key沒有對應的value, 回傳 nil, false
-	t, ok := tc[tmpl]
+	t, ok := templateCache[name]
 	if !ok {
 		log.Fatal("can't get matching template")
 	}
 	byteBuffer := new(bytes.Buffer)
 
-	data = AddDefaultdata(data)
+	data = AddDefaultData(data)
 
 	_ = t.Execute(byteBuffer, data)
 
@@ -58,41 +58,41 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, data *model.TemplateData
 	//}
 }
 
-//CreateTemplateCache creates a template cache as a map
+//CreateTemplateCache 產生網頁資料，並存成map
 func CreateTemplateCache() (map[string]*template.Template, error) {
-	//myCache := make(map[string]*template.Template)
+	//templateMapping := make(map[string]*template.Template)
 
 	//Create a map with index<->template
-	myCache := map[string]*template.Template{}
+	templateMapping := map[string]*template.Template{}
 
-	//get the gohtml that match the pattern
+	//找出所有的page
 	pages, err := filepath.Glob("./templates/*.page.gohtml")
 	if err != nil {
-		return myCache, err
+		return templateMapping, err
+	}
+
+	//找出layout
+	matches, err := filepath.Glob("./templates/*.layout.gohtml")
+	if err != nil {
+		return templateMapping, err
 	}
 
 	for _, page := range pages {
-		//get the name of the template page
+		//取得頁面檔名
 		name := filepath.Base(page)
 
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
-			return myCache, err
-		}
-
-		//find any layout match the template
-		matches, err := filepath.Glob("./templates/*.layout.gohtml")
-		if err != nil {
-			return myCache, err
+			return templateMapping, err
 		}
 
 		if len(matches) > 0 {
 			ts, err = ts.ParseGlob("./templates/*.layout.gohtml")
 			if err != nil {
-				return myCache, err
+				return templateMapping, err
 			}
 		}
-		myCache[name] = ts
+		templateMapping[name] = ts
 	}
-	return myCache, err
+	return templateMapping, err
 }

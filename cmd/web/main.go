@@ -31,12 +31,12 @@ func main() {
 	appConfig.Session = session
 	//產生 Template Cache
 	log.Println("產生Template Cache")
-	tc, err := render.CreateTemplateCache()
+	templateCache, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Fatal("Error Creating Template Cache")
 	}
 	//將產生的Template Cache指定到 AppConfig中
-	appConfig.TemplateCache = tc
+	appConfig.TemplateCache = templateCache
 	//傳入 AppConfig
 	appConfig.UseCache = false //dev mode 設為False
 	// render pkg 設定 appConfig
