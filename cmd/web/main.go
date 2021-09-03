@@ -41,7 +41,7 @@ func main() {
 	appConfig.UseCache = false //dev mode 設為False
 	// render pkg 設定 appConfig
 	render.NewTemplates(&appConfig)
-	//set repo
+	//set up configs
 	repo := handler.NewRepo(&appConfig)
 	handler.NewHandlers(repo)
 
@@ -49,7 +49,7 @@ func main() {
 	//http.HandleFunc("/", handler.Repo.Home)
 	//http.HandleFunc("/about", handler.Repo.About)
 
-	log.Println(fmt.Sprintf("Starting application on port 8080 http://localhost:8080"))
+	log.Println(fmt.Sprintf("Starting application on port 8080 http://127.0.0.1:8080"))
 	//_ = http.ListenAndServe(port, nil)
 
 	srv := &http.Server{

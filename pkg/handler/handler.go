@@ -27,24 +27,41 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
-//Home page
-func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
+//Booking page
+func (m *Repository) Booking(w http.ResponseWriter, r *http.Request) {
 	remoteIP := r.RemoteAddr
-	m.AppConfig.Session.Put(r.Context(), "remoteIP", remoteIP)
-	render.TemplateRenderer(w, "home", &model.TemplateData{})
+	session := m.AppConfig.Session
+	session.Put(r.Context(), "remoteIP", remoteIP)
+	session.Put(r.Context(), "title", "booking")
+	render.TemplateRenderer(w, "booking", &model.TemplateData{})
 }
 
-//About page
-func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
+//Contact page
+func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	// perform some logic
 	stringMap := make(map[string]string)
 	stringMap["test"] = "Hello, again"
 	remoteIP := m.AppConfig.Session.GetString(r.Context(), "remoteIP")
 	stringMap["remoteIP"] = remoteIP
 	//send the data
-	render.TemplateRenderer(w, "about", &model.TemplateData{
+	render.TemplateRenderer(w, "contact", &model.TemplateData{
 		StringMap: stringMap,
 	})
+}
+
+//Index page
+func (m *Repository) Index(w http.ResponseWriter, r *http.Request) {
+	render.TemplateRenderer(w, "index", &model.TemplateData{})
+}
+
+//Room page
+func (m *Repository) Room(w http.ResponseWriter, r *http.Request) {
+	render.TemplateRenderer(w, "room", &model.TemplateData{})
+}
+
+//Reservation page
+func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
+	render.TemplateRenderer(w, "reservation", &model.TemplateData{})
 }
 
 //func About(w http.ResponseWriter, r *http.Request) {

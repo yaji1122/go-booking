@@ -1,0 +1,50 @@
+{{template "base" .}}
+{{define "css"}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" integrity="sha512-yHknP1/AwR+yx26cB1y0cjvQUMvEa2PFzt1c9LlS4pRQ5NOTZFWbhBig+X9G9eYW/8m0/4OXNx8pxJ6z57x0dw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" integrity="sha512-17EgCFERpgZKcm0j0fEq1YCJuyAWdz9KUtv1EjVuaOz8pDnh/0nZxmU6BBXwaaxqoi9PQXnRWqlcDB027hgv9A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{{end}}
+{{define "content"}}
+    <!--Carousel -->
+    <div id="myCarousel">
+        <div><img src="/static/image/outside.png" alt="outside"/></div>
+        <div><img src="/static/image/tray.png" alt="tray"/></div>
+        <div><img src="/static/image/woman-laptop.png" alt="woman-laptop"/></div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12-md-12">
+                <h4 class="text-center mt-4">
+                    Booking Your Holiday
+                </h4>
+            </div>
+            <div class="col-md-12">
+                <p class="text-left">
+                    It's no secret that our planet is pretty incredible.
+                    From ancient archaeological sites to natural features like canyons and cliffs, just about every corner of the world offers special spots. Greece is home to idyllic pink-sand beaches, Bolivia's Salar de Uyuni salt flat offers stunning optical illusion-esque views, and the vibrant blue water of Moraine Lake in Canada is nothing short of picture-perfect.
+                    We've gathered 50 of the most breathtaking views in the world.</p>
+            </div>
+            <div class="col-md-12">
+                <div class="text-center">
+                    <a class="btn btn-outline-dark" href="booking">Reservation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+{{define "js"}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="application/javascript">
+        $(document).ready(()=>{
+            $('#myCarousel').slick({
+                dots: true,
+                infinite: true,
+                autoplay: true,
+                speed: 1000,
+                fade: true,
+                slidesToShow: 1,
+                cssEase: 'linear'
+            })
+        })
+    </script>
+{{end}}

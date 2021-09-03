@@ -4,12 +4,17 @@ import (
 	"github.com/justinas/nosurf"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // WriteToConsole simplee example
 func WriteToConsole(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Hit the page.")
+		ip := r.RemoteAddr
+		url := r.RequestURI
+		if !strings.Contains(url, "static") {
+			log.Printf("ip[%s] access url - %s", ip, url)
+		}
 		next.ServeHTTP(w, r)
 	})
 }

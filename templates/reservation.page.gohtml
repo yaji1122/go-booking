@@ -1,0 +1,56 @@
+{{template "base" .}}
+{{define "content"}}
+    <div class="container" style="margin: 0 auto;">
+        <div style="padding: 50px 0px" class="row">
+            <form action="/availability" enctype="application/x-www-form-urlencoded" class="col-md-6 offset-md-3 needs-validation" novalidate>
+                <h1>Search for Availability</h1>
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input id="firstName" name="firstName" type="text" class="form-control" required>
+                    <div class="invalid-feedback">
+                        You don't have a name ?
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input id="lastName" name="lastName" type="text" class="form-control" required>
+                    <div class="invalid-feedback">
+                        You don't have a name ?
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input id="Email" name="Email" type="text" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Get a fucking E-mail.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bookingDate">Booking Date</label>
+                    <input id="bookingDate" name="bookingDate" type="date" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Why you don't fill in this ? Idiot?
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="stay">Stay</label>
+                    <select id="stay" name="stay" class="form-control" required>
+                        <option value="1">1 Day</option>
+                        <option value="2">2 Days</option>
+                        <option value="3">3 Days</option>
+                        <option value="4">4 Days</option>
+                        <option value="5">5 Days</option>
+                        <option value="6">6 Days</option>
+                        <option value="7">7 Days</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        You can stay fuck off.
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-dark" style="margin-top:10px">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}
