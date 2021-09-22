@@ -1,6 +1,10 @@
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function() {
     'use strict';
+    //initial Notie
+    window.notie
+
+    //Boostrap Validation
     window.addEventListener('load', function() {
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.getElementsByClassName('needs-validation');
@@ -10,6 +14,7 @@
                 if (form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
+                    notie.alert({ type: 'error', text: 'Oh-O !? You miss some input.' })
                 }
                 form.classList.add('was-validated');
             }, false);

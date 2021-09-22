@@ -5,15 +5,19 @@
 {{end}}
 {{define "content"}}
     <!--Carousel -->
-    <div id="myCarousel">
-        <div><img src="/static/image/outside.png" alt="outside"/></div>
-        <div><img src="/static/image/tray.png" alt="tray"/></div>
-        <div><img src="/static/image/woman-laptop.png" alt="woman-laptop"/></div>
+    <div class="carousel">
+        <div id="myCarousel">
+            <div><img src="/static/image/outside.png" alt="outside"/></div>
+            <div><img src="/static/image/tray.png" alt="tray"/></div>
+            <div><img src="/static/image/woman-laptop.png" alt="woman-laptop"/></div>
+        </div>
     </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-12-md-12">
+            <div class="col-md-12">
+            </div>
+            <div class="col-md-12">
                 <h4 class="text-center mt-4">
                     Booking Your Holiday
                 </h4>
@@ -43,7 +47,8 @@
                 speed: 1000,
                 fade: true,
                 slidesToShow: 1,
-                cssEase: 'linear'
+                cssEase: 'linear',
+                arrows: false
             })
         })
     </script>

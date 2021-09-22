@@ -2,8 +2,9 @@ package render
 
 import (
 	"bytes"
-	"github.com/yaji1122/bookings-go/pkg/config"
-	"github.com/yaji1122/bookings-go/pkg/model"
+	"github.com/justinas/nosurf"
+	"github.com/yaji1122/bookings-go/internal/config"
+	"github.com/yaji1122/bookings-go/internal/model"
 	"html/template"
 	"log"
 	"net/http"
@@ -19,12 +20,13 @@ func NewTemplates(config *config.AppConfig) {
 	appConfig = config
 }
 
-func AddDefaultData(td *model.TemplateData) *model.TemplateData {
+func AddDefaultData(td *model.TemplateData, r *http.Request) *model.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // TemplateRenderer 回應請求，回傳對應的Template頁面
-func TemplateRenderer(w http.ResponseWriter, name string, data *model.TemplateData) {
+func TemplateRenderer(w http.ResponseWriter, r *http.Request, name string, data *model.TemplateData) {
 	name = name + ".page.gohtml"
 	var templateCache map[string]*template.Template
 	//get the template cache from the appConfig config
@@ -41,7 +43,7 @@ func TemplateRenderer(w http.ResponseWriter, name string, data *model.TemplateDa
 	}
 	byteBuffer := new(bytes.Buffer)
 
-	data = AddDefaultData(data)
+	data = AddDefaultData(data, r)
 
 	_ = t.Execute(byteBuffer, data)
 

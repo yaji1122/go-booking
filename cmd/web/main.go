@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
-	"github.com/yaji1122/bookings-go/pkg/config"
-	"github.com/yaji1122/bookings-go/pkg/handler"
-	"github.com/yaji1122/bookings-go/pkg/render"
+	"github.com/yaji1122/bookings-go/internal/config"
+	"github.com/yaji1122/bookings-go/internal/handler"
+	"github.com/yaji1122/bookings-go/internal/render"
 	"log"
 	"net/http"
 	"time"
 )
 
-const port = ":8080"
+const port = ":8081"
 
 //宣告一個系統設定 AppConfig for same pkg use
 var appConfig config.AppConfig
@@ -49,7 +49,7 @@ func main() {
 	//http.HandleFunc("/", handler.Repo.Home)
 	//http.HandleFunc("/about", handler.Repo.About)
 
-	log.Println(fmt.Sprintf("Starting application on port 8080 http://127.0.0.1:8080"))
+	log.Println(fmt.Sprintf("Starting application on port %s http://127.0.0.1%s", port, port))
 	//_ = http.ListenAndServe(port, nil)
 
 	srv := &http.Server{
