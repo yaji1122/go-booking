@@ -1,5 +1,7 @@
 package model
 
+import "github.com/yaji1122/bookings-go/internal/forms"
+
 //TemplateData holds data sent from handler for template
 type TemplateData struct {
 	StringMap map[string]string
@@ -9,7 +11,9 @@ type TemplateData struct {
 	Data      map[string]interface{}
 	CSRFToken string
 	//A Flash message to the user
-	Flash string
+	Flash   string
+	Warning string
 	//Error message
 	Error string
+	Form  *forms.Form
 }

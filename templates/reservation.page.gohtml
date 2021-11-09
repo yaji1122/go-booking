@@ -2,55 +2,86 @@
 {{define "content"}}
     <div class="container" style="margin: 0 auto;">
         <div style="padding: 50px 0px" class="row">
-            <form action="/availability" enctype="application/x-www-form-urlencoded" class="col-md-6 offset-md-3 needs-validation" method="post" novalidate>
+
+
+            {{$res := index .Data "reservation"}}
+            <form action="/reservation" enctype="application/x-www-form-urlencoded" class="col-md-6 offset-md-3" method="post" novalidate>
+                <input type="text" name="csrf_token" value="{{.CSRFToken}}" hidden/>
                 <h1>Search for Availability</h1>
+
                 <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input id="firstName" name="firstName" type="text" class="form-control" required>
+                    <label for="first_name">First Name</label>
+                    <input id="first_name" value="{{$res.FirstName}}" name="first_name" type="text" class="form-control {{with .Form.Errors.Get "firstName"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
-                        You don't have a name ?
+                    {{with .Form.Errors.Get "firstName"}}
+                        {{.}}
+                    {{end}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input id="lastName" name="lastName" type="text" class="form-control" required>
+                    <label for="last_name">Last Name</label>
+                    <input id="last_name" name="last_name" value="{{$res.LastName}}"  type="text" class="form-control {{with .Form.Errors.Get "lastName"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
-                        You don't have a name ?
+                        {{with .Form.Errors.Get "lastName"}}
+                            {{.}}
+                        {{end}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="Email">Email</label>
-                    <input id="Email" name="Email" type="text" class="form-control" required>
+                    <label for="email">Email</label>
+                    <input id="email" name="email" value="{{$res.Email}}"  type="text" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
-                        Get a fucking E-mail.
+                        {{with .Form.Errors.Get "email"}}
+                            {{.}}
+                        {{end}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="bookingDate">Booking Date</label>
-                    <input id="bookingDate" name="bookingDate" type="text" class="vanilla-datepicker form-control" required>
+                    <label for="Email">Phone</label>
+                    <input id="phone" name="phone" value="{{$res.Phone}}"  type="text" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
-                        Why you don't fill in this ? Idiot?
+                        {{with .Form.Errors.Get "phone"}}
+                            {{.}}
+                        {{end}}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="stay">Stay</label>
-                    <select id="stay" name="stay" class="form-control" required>
-                        <option value="1">1 Day</option>
-                        <option value="2">2 Days</option>
-                        <option value="3">3 Days</option>
-                        <option value="4">4 Days</option>
-                        <option value="5">5 Days</option>
-                        <option value="6">6 Days</option>
-                        <option value="7">7 Days</option>
-                    </select>
+                    <label for="start_date">Start Date</label>
+                    <input id="start_date" name="start_date" value="{{$res.StartDate}}"  type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "startDate"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
-                        You can stay fuck off.
+                        {{with .Form.Errors.Get "startDate"}}
+                            {{.}}
+                        {{end}}
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+                    <input id="end_date" name="end_date" value="{{$res.EndDate}}"  type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "EndDate"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "EndDate"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-outline-dark" style="margin-top:10px">Submit</button>
                 </div>
             </form>
         </div>
     </div>
+{{end}}
+{{define "js"}}
+    <script>
+        $(document).ready(()=>{
+            //ajax
+            //datepicker
+            const elem = document.querySelector('input[name="bookingDate"]');
+            const datepicker = new Datepicker(elem, {
+                autohide: true,
+                format: 'yyyy/mm/dd'
+            });
+        })
+    </script>
 {{end}}

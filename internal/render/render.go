@@ -2,6 +2,8 @@ package render
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"github.com/justinas/nosurf"
 	"github.com/yaji1122/bookings-go/internal/config"
 	"github.com/yaji1122/bookings-go/internal/model"
@@ -13,20 +15,25 @@ import (
 
 var functions = template.FuncMap{}
 
-// NewTemplates sets the config for the template package
+// NewRenderer sets the config for the template package
 var appConfig *config.AppConfig
 
-func NewTemplates(config *config.AppConfig) {
+var rootPath = "./templates"
+
+func NewRenderer(config *config.AppConfig) {
 	appConfig = config
 }
 
 func AddDefaultData(td *model.TemplateData, r *http.Request) *model.TemplateData {
+	td.Flash = appConfig.Session.PopString(r.Context(), "flash")
+	td.Warning = appConfig.Session.PopString(r.Context(), "warning")
+	td.Error = appConfig.Session.PopString(r.Context(), "error")
 	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
-// TemplateRenderer 回應請求，回傳對應的Template頁面
-func TemplateRenderer(w http.ResponseWriter, r *http.Request, name string, data *model.TemplateData) {
+// Template 回應請求，回傳對應的Template頁面
+func Template(w http.ResponseWriter, r *http.Request, name string, data *model.TemplateData) error {
 	name = name + ".page.gohtml"
 	var templateCache map[string]*template.Template
 	//get the template cache from the appConfig config
@@ -39,7 +46,7 @@ func TemplateRenderer(w http.ResponseWriter, r *http.Request, name string, data 
 	//map 如果key沒有對應的value, 回傳 nil, false
 	t, ok := templateCache[name]
 	if !ok {
-		log.Fatal("can't get matching template")
+		return errors.New("cant get Template from cache")
 	}
 	byteBuffer := new(bytes.Buffer)
 
@@ -50,6 +57,7 @@ func TemplateRenderer(w http.ResponseWriter, r *http.Request, name string, data 
 	_, err := byteBuffer.WriteTo(w)
 	if err != nil {
 		log.Fatal("Error writing template to browser", err)
+		return err
 	}
 	//
 	//parseTemplate, _ := template.ParseFiles("./templates/" + tmpl + ".page.gohtml")
@@ -58,6 +66,7 @@ func TemplateRenderer(w http.ResponseWriter, r *http.Request, name string, data 
 	//if err != nil {
 	//	fmt.Println("error parsing template:", err)
 	//}
+	return nil
 }
 
 //CreateTemplateCache 產生網頁資料，並存成map
@@ -68,13 +77,13 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	templateMapping := map[string]*template.Template{}
 
 	//找出所有的page
-	pages, err := filepath.Glob("./templates/*.page.gohtml")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.gohtml", rootPath))
 	if err != nil {
 		return templateMapping, err
 	}
 
 	//找出layout
-	matches, err := filepath.Glob("./templates/*.layout.gohtml")
+	matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.gohtml", rootPath))
 	if err != nil {
 		return templateMapping, err
 	}
@@ -89,7 +98,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		}
 
 		if len(matches) > 0 {
-			ts, err = ts.ParseGlob("./templates/*.layout.gohtml")
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.layout.gohtml", rootPath))
 			if err != nil {
 				return templateMapping, err
 			}
