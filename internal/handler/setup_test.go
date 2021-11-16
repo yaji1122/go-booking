@@ -9,7 +9,7 @@ import (
 	"github.com/justinas/nosurf"
 	"github.com/yaji1122/bookings-go/internal/config"
 	"github.com/yaji1122/bookings-go/internal/model"
-	"github.com/yaji1122/bookings-go/internal/render"
+	"github.com/yaji1122/bookings-go/internal/pageRenderer"
 	"html/template"
 	"log"
 	"net/http"
@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-var appConfig config.AppConfig
+var appConfig config.Configuration
 var session *scs.SessionManager
 var functions = template.FuncMap{}
 var rootPath = "./../../templates"
@@ -47,15 +47,15 @@ func getRoutes() http.Handler {
 	}
 	//將產生的Template Cache指定到 AppConfig中
 	appConfig.TemplateCache = templateCache
-	//傳入 AppConfig
+	//傳入 Configuration
 	appConfig.UseCache = true //dev mode 設為False
 	//初始化Validator
 	model.InitialValidator()
-	// render pkg 設定 appConfig
+	// pageRenderer pkg 設定 appConfig
 	//set up configs
-	repo := NewRepo(&appConfig)
-	NewHandlers(repo)
-	render.NewRenderer(&appConfig)
+	repo := InitiateRepository(&appConfig)
+	CreateHandler(repo)
+	pageRenderer.CreatePageRenderer(&appConfig)
 	//here move the routes to the router.go
 	//http.HandleFunc("/", Repo.Home)
 	//http.HandleFunc("/about", Repo.About)

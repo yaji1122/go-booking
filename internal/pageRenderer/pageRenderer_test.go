@@ -1,4 +1,4 @@
-package render
+package pageRenderer
 
 import (
 	"github.com/yaji1122/bookings-go/internal/model"
@@ -8,6 +8,7 @@ import (
 
 func TestAddDefaultData(t *testing.T) {
 	var td model.TemplateData
+	rootPath = "./../../templates"
 	r, err := getSession()
 	if err != nil {
 		t.Error(err)
@@ -25,24 +26,15 @@ func TestTemplateRenderer(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	appConfig.TemplateCache = tc
+	configuration.TemplateCache = tc
 
 	r, err := getSession()
 	if err != nil {
 		t.Error(err)
 	}
-
 	var w myWriter
-
-	err = Template(&w, r, "index", &model.TemplateData{})
-	if err != nil {
-		t.Error("error writing template to browser")
-	}
-
-	err = Template(&w, r, "contact", &model.TemplateData{})
-	if err != nil {
-		t.Error("rendered template that doesnt exist.")
-	}
+	Template(&w, r, "index", &model.TemplateData{})
+	Template(&w, r, "contact", &model.TemplateData{})
 }
 
 func TestCreateTemplateCache(t *testing.T) {

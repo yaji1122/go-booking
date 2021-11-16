@@ -6,11 +6,13 @@ import (
 	"log"
 )
 
-type AppConfig struct {
+const InProduction = false
+
+type Configuration struct {
 	UseCache      bool
+	InProduction  bool
 	TemplateCache map[string]*template.Template
 	InfoLog       *log.Logger
 	ErrorLog      *log.Logger
-	InProduction  bool
 	Session       *scs.SessionManager
 }

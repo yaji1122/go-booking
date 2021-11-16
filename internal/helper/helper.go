@@ -7,10 +7,10 @@ import (
 	"runtime/debug"
 )
 
-var app *config.AppConfig
+var app *config.Configuration
 
 // NewHelper sets up app config for helper
-func NewHelper(a *config.AppConfig) {
+func NewHelper(a *config.Configuration) {
 	app = a
 }
 

@@ -9,8 +9,9 @@ import (
 	"github.com/yaji1122/bookings-go/internal/driver"
 	"github.com/yaji1122/bookings-go/internal/handler"
 	"github.com/yaji1122/bookings-go/internal/helper"
+	"github.com/yaji1122/bookings-go/internal/logger"
 	"github.com/yaji1122/bookings-go/internal/model"
-	"github.com/yaji1122/bookings-go/internal/render"
+	"github.com/yaji1122/bookings-go/internal/pageRenderer"
 	"log"
 	"net/http"
 	"os"
@@ -18,117 +19,82 @@ import (
 )
 
 const port = ":8081"
+const inProduction = false
 
-//宣告一個系統設定 AppConfig for same pkg use
-var appConfig config.AppConfig
+var configuration config.Configuration
 var session *scs.SessionManager
-var infoLog *log.Logger
-var errorLog *log.Logger
 
 func main() {
-	pool, err := run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	//初始化伺服器，產生所需要的設定
+	pool, err := initiate()
+	checkErr(err)
+	//main方法結束時，關閉資料庫連線
+	defer func(pool *sql.DB) {
+		err := pool.Close()
+		checkErr(err)
+	}(pool)
 
-	defer func(SQL *sql.DB) {
-		err := SQL.Close()
-		if err != nil {
-
-		}
-	}(pool.SQL)
-
-	srv := &http.Server{
+	//開啟Http Server 並監聽port
+	server := http.Server{
 		Addr:    port,
-		Handler: routes(&appConfig),
+		Handler: routes(&configuration),
 	}
 
-	err = srv.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	err = server.ListenAndServe()
+	checkErr(err)
 }
 
-func run() (*driver.Pool, error) {
+func initiate() (*sql.DB, error) {
 
-	//what am I goin to put in the session
+	//what am I going to put in the session
 	gob.Register(model.Reservation{})
 
-	//change to true when in production
-	appConfig.InProduction = false
+	//產生 Template Cache
+	templateCache, err := pageRenderer.CreateTemplateCache()
+	checkErr(err)
 
-	//create Logger
-	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	appConfig.InfoLog = infoLog
-
-	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	appConfig.ErrorLog = errorLog
-
-	//初始化session
-	log.Println("初始化Session Manager")
+	//產生 http Session
 	session = scs.New()
-	session.Lifetime = 30 * time.Minute
 	session.Cookie.Persist = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = false //localhost use http, in product will be true
-	appConfig.Session = session
+	session.Lifetime = 30 * time.Minute
 
-	//connect to db
-	log.Println("Connecting to database")
-	pool, err := driver.ConnectSQL("root:53434976@/test?charset=utf8")
-	if err != nil {
-		log.Fatal("Cannot connect to database")
+	//設定載入Configuration
+	log.Println("初始化 Configuration")
+	configuration.InProduction = config.InProduction
+	if configuration.InProduction {
+		configuration.UseCache = false
+	} else {
+		log.Println("開發模式：不使用Cache")
+		configuration.UseCache = true
 	}
+	//初始化Logger
+	logger.CreateLogger()
 
-	//產生 Template Cache
-	log.Println("產生Template Cache")
-	templateCache, err := render.CreateTemplateCache()
-	if err != nil {
-		log.Fatal("Error Creating Template Cache")
-		return nil, err
-	}
-	//將產生的Template Cache指定到 AppConfig中
-	appConfig.TemplateCache = templateCache
-	//傳入 AppConfig
-	appConfig.UseCache = false //dev mode 設為False
+	configuration.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	configuration.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	configuration.Session = session
+	configuration.TemplateCache = templateCache
+
+	pool := driver.CreateDatabaseConnectionPool("root:53434976@/test?charset=utf8")
+	logInstance := logger.CreateLogger()
+
 	//初始化Validator
 	model.InitialValidator()
-	// render pkg 設定 appConfig
-	render.NewRenderer(&appConfig)
+	// pageRenderer pkg 設定 configuration
+	pageRenderer.CreatePageRenderer(&configuration)
 	//set up configs
-	repo := handler.NewRepo(&appConfig, pool)
-	handler.NewHandlers(repo)
-	helper.NewHelper(&appConfig)
-
-	//here move the routes to the router.go
-	//http.HandleFunc("/", handler.Repo.Home)
-	//http.HandleFunc("/about", handler.Repo.About)
+	handler.CreateHandler(logInstance, session, pool)
+	helper.NewHelper(&configuration)
 
 	log.Println(fmt.Sprintf("Starting application on port %s http://127.0.0.1%s", port, port))
-	//_ = http.ListenAndServe(port, nil)
+
 	return pool, nil
 }
 
-//func Divide(w http.ResponseWriter, r *http.Request) {
-//	f, err := divideValues(100.0, 0.0)
-//	if err != nil {
-//		fmt.Fprintf(w, fmt.Sprintf("Error Message: %s", err))
-//	} else {
-//		fmt.Fprintf(w, fmt.Sprintf( "%f divided by %f is %f", 100.0, 0.0, f))
-//	}
-//}
-
-//func divideValues(x, y float32) (float32, error) {
-//	var result float32
-//	if y <= 0.0 {
-//		return result, errors.New("Can't not divide by 0")
-//	}
-//	result = x / y
-//	return result, nil
-//}
-////add two values
-//func addValues(x, y int) (int, error) {
-//	var sum int
-//	sum = x + y
-//	return sum, nil
-//}
+func checkErr(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

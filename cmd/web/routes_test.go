@@ -8,7 +8,7 @@ import (
 )
 
 func TestRoutes(t *testing.T) {
-	var app config.AppConfig
+	var app config.Configuration
 	mux := routes(&app)
 
 	switch v := mux.(type) {

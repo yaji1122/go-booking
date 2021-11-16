@@ -1,12 +1,88 @@
 {{template "base" .}}
 {{define "content"}}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Contact</h1>
+    <div class="container" style="margin: 0 auto;">
+        <div style="padding: 50px 0" class="row">
 
-                <a href="/">Back To Home</a>
-            </div>
+
+            {{$res := index .Data "reservation"}}
+            <form action="/reservation" enctype="application/x-www-form-urlencoded" class="col-md-6 offset-md-3" method="post" novalidate>
+                <input type="text" name="csrf_token" value="{{.CSRFToken}}" hidden/>
+                <h1>Search for Availability</h1>
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input id="first_name" value="{{$res.FirstName}}" name="first_name" type="text" class="form-control {{with .Form.Errors.Get "firstName"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "firstName"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input id="last_name" name="last_name" value="{{$res.LastName}}"  type="text" class="form-control {{with .Form.Errors.Get "lastName"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "lastName"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" value="{{$res.Email}}"  type="text" class="form-control {{with .Form.Errors.Get "email"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "email"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Email">Phone</label>
+                    <input id="phone" name="phone" value="{{$res.Phone}}"  type="text" class="form-control {{with .Form.Errors.Get "phone"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "phone"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="start_date">Start Date</label>
+                    <input id="start_date" name="start_date" type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "startDate"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "startDate"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+                    <input id="end_date" name="end_date" type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "EndDate"}}is-invalid{{end}}" required>
+                    <div class="invalid-feedback">
+                        {{with .Form.Errors.Get "EndDate"}}
+                            {{.}}
+                        {{end}}
+                    </div>
+                </div>
+                <input type="hidden" name="room_id" value="1"/>
+
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-dark" style="margin-top:10px">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
+{{end}}
+{{define "js"}}
+    <script>
+        $(document).ready(()=>{
+            //ajax
+            //datepicker
+            const elem = document.querySelector('input[name="bookingDate"]');
+            const datepicker = new Datepicker(elem, {
+                autohide: true,
+                format: 'yyyy/mm/dd'
+            });
+        })
+    </script>
 {{end}}

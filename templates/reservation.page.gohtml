@@ -1,7 +1,7 @@
 {{template "base" .}}
 {{define "content"}}
     <div class="container" style="margin: 0 auto;">
-        <div style="padding: 50px 0px" class="row">
+        <div style="padding: 50px 0" class="row">
 
 
             {{$res := index .Data "reservation"}}
@@ -47,7 +47,7 @@
                 </div>
                 <div class="form-group">
                     <label for="start_date">Start Date</label>
-                    <input id="start_date" name="start_date" value="{{$res.StartDate}}"  type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "startDate"}}is-invalid{{end}}" required>
+                    <input id="start_date" name="start_date" type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "startDate"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
                         {{with .Form.Errors.Get "startDate"}}
                             {{.}}
@@ -56,13 +56,14 @@
                 </div>
                 <div class="form-group">
                     <label for="end_date">End Date</label>
-                    <input id="end_date" name="end_date" value="{{$res.EndDate}}"  type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "EndDate"}}is-invalid{{end}}" required>
+                    <input id="end_date" name="end_date" type="text" class="vanilla-datepicker form-control {{with .Form.Errors.Get "EndDate"}}is-invalid{{end}}" required>
                     <div class="invalid-feedback">
                         {{with .Form.Errors.Get "EndDate"}}
                             {{.}}
                         {{end}}
                     </div>
                 </div>
+                <input type="hidden" name="room_id" value="1"/>
 
 
                 <div class="text-center">

@@ -1,4 +1,4 @@
-package render
+package pageRenderer
 
 import (
 	"encoding/gob"
@@ -12,7 +12,7 @@ import (
 )
 
 var session *scs.SessionManager
-var testApp config.AppConfig
+var testApp config.Configuration
 
 func TestMain(m *testing.M) {
 	gob.Register(model.Reservation{})
@@ -27,7 +27,7 @@ func TestMain(m *testing.M) {
 
 	testApp.Session = session
 
-	appConfig = &testApp
+	configuration = &testApp
 
 	os.Exit(m.Run())
 }

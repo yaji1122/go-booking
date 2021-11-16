@@ -36,10 +36,10 @@ type User struct {
 }
 
 type Room struct {
-	ID              int
-	RestrictionName string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID        int
+	RoomName  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type RoomRestriction struct {
@@ -48,7 +48,7 @@ type RoomRestriction struct {
 	EndDate       time.Time
 	RoomID        int
 	Room          Room
-	ReservationID int
+	ReservationID int64
 	Reservation   Reservation
 	RestrictionID int
 	Restriction   Restriction
