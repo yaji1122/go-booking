@@ -7,6 +7,7 @@ import (
 
 type DatabaseRepo interface {
 	AllUsers() bool
+	GetRoomById(roomID int) model.Room
 	InsertReservation(res model.Reservation) (int64, error)
 	InsertRoomRestriction(res model.RoomRestriction) error
 	SearchAvailabilityByDatesAndRoom(start, end time.Time, roomID int) (bool, error)

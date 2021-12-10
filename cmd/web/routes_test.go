@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"github.com/yaji1122/bookings-go/internal/config"
 	"testing"
 )
 
 func TestRoutes(t *testing.T) {
-	var app config.Configuration
-	mux := routes(&app)
+	mux := routes()
 
 	switch v := mux.(type) {
 	case *chi.Mux:

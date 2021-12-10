@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"github.com/justinas/nosurf"
 	"github.com/yaji1122/bookings-go/internal/config"
 	"github.com/yaji1122/bookings-go/internal/helper"
@@ -16,10 +17,10 @@ import (
 var functions = template.FuncMap{}
 var templateCache map[string]*template.Template
 var configuration *config.Configuration
-
+var session *scs.SessionManager
 var rootPath = "./templates"
 
-func CreatePageRenderer(config *config.Configuration) {
+func CreatePageRenderer(s *scs.SessionManager, config *config.Configuration) {
 	//建立cache
 	cache, err := CreateTemplateCache()
 	if err != nil {
@@ -27,12 +28,13 @@ func CreatePageRenderer(config *config.Configuration) {
 	}
 	templateCache = cache
 	configuration = config
+	session = s
 }
 
 func AddDefaultData(td *model.TemplateData, r *http.Request) *model.TemplateData {
-	td.Flash = configuration.Session.PopString(r.Context(), "flash")
-	td.Warning = configuration.Session.PopString(r.Context(), "warning")
-	td.Error = configuration.Session.PopString(r.Context(), "error")
+	td.Flash = session.PopString(r.Context(), "flash")
+	td.Warning = session.PopString(r.Context(), "warning")
+	td.Error = session.PopString(r.Context(), "error")
 	td.CSRFToken = nosurf.Token(r)
 	return td
 }

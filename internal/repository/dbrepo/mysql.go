@@ -10,6 +10,25 @@ func (m *mysqlDBRepo) AllUsers() bool {
 	return true
 }
 
+func (m *mysqlDBRepo) GetRoomById(roomID int) model.Room {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
+
+	var room model.Room
+
+	query := `SELECT id, room_name FROM rooms WHERE id = ?;`
+
+	stmt, err := m.Pool.Prepare(query)
+	checkErr(err)
+
+	rows, err := stmt.QueryContext(ctx, roomID)
+	rows.Next()
+	err = rows.Scan(&room.ID, &room.RoomName)
+	checkErr(err)
+
+	return room
+}
+
 func (m *mysqlDBRepo) InsertReservation(res model.Reservation) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 
@@ -76,7 +95,7 @@ func (m *mysqlDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]mod
 			  FROM rooms r 
 			  WHERE r.id not in 
 			        (SELECT room_id 
-			         FROM room_restrictions rr WHERE ? < rr.end_date AND start > rr.start_date)`
+			         FROM room_restrictions rr WHERE ? <= rr.end_date AND ? >= rr.start_date)`
 
 	stmt, err := m.Pool.Prepare(query)
 	checkErr(err)

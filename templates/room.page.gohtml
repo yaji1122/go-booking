@@ -2,7 +2,8 @@
 {{define "content"}}
 <div class="container">
     <div class="row">
-        <h1 class="text-center" style="margin: 10px 0px">Classic Room</h1>
+        {{$room := index .Data "room"}}
+        <h1 class="text-center" style="margin: 10px 0px">{{$room.RoomName}} Room</h1>
         <div class="text-center">
             <img src="/static/image/room.png" style="max-width: 80%"/>
         </div>

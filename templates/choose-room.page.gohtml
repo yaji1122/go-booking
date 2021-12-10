@@ -1,0 +1,16 @@
+{{template "base" .}}
+{{define "content"}}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Choose Room</h1>
+                <hr>
+                {{$rooms := index .Data "rooms"}}
+                {{$res := index .Data "reservation"}}
+                {{range $rooms}}
+                    <a href="/reservation?start_date={{$res.StartDate.Format "2006/01/02" }}&end_date={{$res.EndDate.Format "2006/01/02" }}&ID={{.ID}}">{{.RoomName}}</a><br>
+                {{end}}
+            </div>
+        </div>
+    </div>
+{{end}}
